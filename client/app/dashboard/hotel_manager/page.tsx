@@ -100,7 +100,7 @@ export default function HotelManagerDashboard() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto max-w-[85vw] md:max-w-full">
                         <Table>
                             <TableHeader>
                                 <TableRow className="bg-slate-50">

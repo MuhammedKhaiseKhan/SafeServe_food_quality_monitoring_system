@@ -31,6 +31,8 @@ export default function AdminFormsPage() {
     const [fields, setFields] = useState<FormField[]>([]);
     const [newField, setNewField] = useState({ name: '', label: '', type: 'text' });
 
+    const [isCreating, setIsCreating] = useState(false);
+
     useEffect(() => {
         fetchForms();
     }, []);
@@ -56,17 +58,21 @@ export default function AdminFormsPage() {
 
     const resetForm = () => {
         setEditingId(null);
+        setIsCreating(true); // Explicitly creating
         setTitle('');
         setFields([]);
         setNewField({ name: '', label: '', type: 'text' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleEdit = (form: InspectionForm) => {
+        setIsCreating(false);
         setEditingId(form.id);
         setTitle(form.title);
         // Ensure structure is an array
         setFields(Array.isArray(form.structure) ? form.structure : []);
         setNewField({ name: '', label: '', type: 'text' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const addField = () => {
@@ -100,7 +106,8 @@ export default function AdminFormsPage() {
             if (res.ok) {
                 toast.success(editingId ? 'Form updated successfully' : 'Form created successfully');
                 fetchForms();
-                resetForm();
+                setIsCreating(false);
+                setEditingId(null);
             } else {
                 toast.error('Failed to save form');
             }
@@ -135,7 +142,10 @@ export default function AdminFormsPage() {
             if (res.ok) {
                 toast.success('Form deleted successfully');
                 fetchForms();
-                if (editingId === id) resetForm();
+                if (editingId === id) {
+                    setEditingId(null);
+                    setIsCreating(false);
+                }
             } else {
                 toast.error('Failed to delete form');
             }
@@ -144,21 +154,28 @@ export default function AdminFormsPage() {
         }
     };
 
+    const handleCancel = () => {
+        setIsCreating(false);
+        setEditingId(null);
+    };
+
+    const showEditor = isCreating || editingId !== null;
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
-                    {editingId ? (
+                    {showEditor ? (
                         <>
-                            <Button variant="ghost" size="icon" onClick={resetForm}><ArrowLeft size={20} /></Button>
-                            Edit Form
+                            <Button variant="ghost" size="icon" onClick={handleCancel}><ArrowLeft size={20} /></Button>
+                            {editingId ? 'Edit Form' : 'New Form'}
                         </>
                     ) : (
                         'Manage Inspection Forms'
                     )}
                 </h2>
-                {!editingId && (
-                    <Button onClick={() => { resetForm(); /* Just to ensure state is clean */ }}>
+                {!showEditor && (
+                    <Button onClick={resetForm}>
                         <Plus size={16} className="mr-2" /> New Form
                     </Button>
                 )}
@@ -166,7 +183,7 @@ export default function AdminFormsPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Form List Sidebar */}
-                <div className={`lg:col-span-1 space-y-4 ${editingId ? 'hidden lg:block' : 'block'}`}>
+                <div className={`lg:col-span-1 space-y-4 ${showEditor ? 'hidden lg:block' : 'block'}`}>
                     <Card>
                         <CardHeader>
                             <CardTitle>Existing Forms</CardTitle>
@@ -207,69 +224,77 @@ export default function AdminFormsPage() {
                 </div>
 
                 {/* Editor Area */}
-                <div className={`lg:col-span-2 ${!editingId && forms.length > 0 ? 'hidden lg:block' : 'block'}`}>
+                <div className={`lg:col-span-2 ${showEditor ? 'block' : 'hidden lg:block'}`}>
                     <Card className="h-full">
                         <CardHeader>
                             <CardTitle>{editingId ? 'Edit Form' : 'Create New Form'}</CardTitle>
                             <CardDescription>Define the structure of your inspection checklist.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div className="space-y-2">
-                                <Label>Form Title</Label>
-                                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Morning Hygiene Check" />
-                            </div>
+                            {(showEditor || forms.length === 0) ? (
+                                <>
+                                    <div className="space-y-2">
+                                        <Label>Form Title</Label>
+                                        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Morning Hygiene Check" />
+                                    </div>
 
-                            <div className="border p-4 rounded-lg space-y-4 bg-gray-50/50">
-                                <div className="flex justify-between items-center">
-                                    <h3 className="font-semibold text-sm">Form Fields</h3>
-                                    <span className="text-xs text-gray-500">{fields.length} fields added</span>
-                                </div>
-
-                                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-                                    {fields.length === 0 && (
-                                        <div className="text-center py-8 text-sm text-gray-400 border-2 border-dashed rounded-lg">
-                                            No fields added yet. Add one below.
+                                    <div className="border p-4 rounded-lg space-y-4 bg-gray-50/50">
+                                        <div className="flex justify-between items-center">
+                                            <h3 className="font-semibold text-sm">Form Fields</h3>
+                                            <span className="text-xs text-gray-500">{fields.length} fields added</span>
                                         </div>
-                                    )}
-                                    {fields.map((f, i) => (
-                                        <div key={i} className="flex justify-between items-center bg-white p-3 rounded border shadow-sm group">
-                                            <div className="grid grid-cols-2 gap-4 flex-1">
-                                                <div className="text-sm"><span className="font-medium">Label:</span> {f.label}</div>
-                                                <div className="text-sm text-gray-500"><span className="font-medium text-gray-700">ID:</span> {f.name}</div>
+
+                                        <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+                                            {fields.length === 0 && (
+                                                <div className="text-center py-8 text-sm text-gray-400 border-2 border-dashed rounded-lg">
+                                                    No fields added yet. Add one below.
+                                                </div>
+                                            )}
+                                            {fields.map((f, i) => (
+                                                <div key={i} className="flex justify-between items-center bg-white p-3 rounded border shadow-sm group">
+                                                    <div className="grid grid-cols-2 gap-4 flex-1">
+                                                        <div className="text-sm"><span className="font-medium">Label:</span> {f.label}</div>
+                                                        <div className="text-sm text-gray-500"><span className="font-medium text-gray-700">ID:</span> {f.name}</div>
+                                                    </div>
+                                                    <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => removeField(i)}>
+                                                        <Trash2 size={14} />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="pt-4 border-t mt-4">
+                                            <Label className="mb-2 block text-xs font-semibold text-gray-500 uppercase tracking-wider">Add New Field</Label>
+                                            <div className="grid grid-cols-1 md:grid-cols-7 gap-2 items-end">
+                                                <div className="md:col-span-3 space-y-1">
+                                                    <Label className="text-xs">Field ID (unique)</Label>
+                                                    <Input className="h-8 text-sm" placeholder="e.g. temp_fridge" value={newField.name} onChange={(e) => setNewField({ ...newField, name: e.target.value })} />
+                                                </div>
+                                                <div className="md:col-span-3 space-y-1">
+                                                    <Label className="text-xs">Label</Label>
+                                                    <Input className="h-8 text-sm" placeholder="e.g. Fridge Temp" value={newField.label} onChange={(e) => setNewField({ ...newField, label: e.target.value })} />
+                                                </div>
+                                                <div className="md:col-span-1">
+                                                    <Button size="sm" onClick={addField} className="w-full h-8" disabled={!newField.name || !newField.label}>Add</Button>
+                                                </div>
                                             </div>
-                                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => removeField(i)}>
-                                                <Trash2 size={14} />
-                                            </Button>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="pt-4 border-t mt-4">
-                                    <Label className="mb-2 block text-xs font-semibold text-gray-500 uppercase tracking-wider">Add New Field</Label>
-                                    <div className="grid grid-cols-1 md:grid-cols-7 gap-2 items-end">
-                                        <div className="md:col-span-3 space-y-1">
-                                            <Label className="text-xs">Field ID (unique)</Label>
-                                            <Input className="h-8 text-sm" placeholder="e.g. temp_fridge" value={newField.name} onChange={(e) => setNewField({ ...newField, name: e.target.value })} />
-                                        </div>
-                                        <div className="md:col-span-3 space-y-1">
-                                            <Label className="text-xs">Label</Label>
-                                            <Input className="h-8 text-sm" placeholder="e.g. Fridge Temp" value={newField.label} onChange={(e) => setNewField({ ...newField, label: e.target.value })} />
-                                        </div>
-                                        <div className="md:col-span-1">
-                                            <Button size="sm" onClick={addField} className="w-full h-8" disabled={!newField.name || !newField.label}>Add</Button>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div className="flex justify-end gap-3 pt-4">
-                                {editingId && (
-                                    <Button variant="outline" onClick={resetForm}>Cancel</Button>
-                                )}
-                                <Button onClick={handleSave} disabled={!title || fields.length === 0} className="w-full md:w-auto min-w-[150px]">
-                                    {editingId ? 'Update Form' : 'Create Form'}
-                                </Button>
-                            </div>
+                                    <div className="flex justify-end gap-3 pt-4">
+                                        {showEditor && (
+                                            <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+                                        )}
+                                        <Button onClick={handleSave} disabled={!title || fields.length === 0} className="w-full md:w-auto min-w-[150px]">
+                                            {editingId ? 'Update Form' : 'Create Form'}
+                                        </Button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-48 text-gray-400">
+                                    <p>Select a form to edit details</p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
