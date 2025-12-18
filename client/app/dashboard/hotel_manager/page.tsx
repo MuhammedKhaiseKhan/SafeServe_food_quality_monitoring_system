@@ -13,8 +13,10 @@ export default function HotelManagerDashboard() {
 
     const fetchStats = async () => {
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports/stats`, {
-                credentials: 'include'
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setStats(await res.json());
         } catch (error) {
@@ -24,8 +26,10 @@ export default function HotelManagerDashboard() {
 
     const fetchReports = async () => {
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports?limit=10`, {
-                credentials: 'include'
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
                 const data = await res.json();

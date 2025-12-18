@@ -25,8 +25,10 @@ export default function AdminGuidelinesPage() {
 
     const fetchGuidelines = async () => {
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/guidelines`, {
-                credentials: 'include'
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setGuidelines(await res.json());
         } catch (error) {
@@ -55,9 +57,11 @@ export default function AdminGuidelinesPage() {
             action: {
                 label: "Delete",
                 onClick: async () => {
+                    const token = localStorage.getItem('token');
                     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/guidelines/${id}`, {
                         method: 'DELETE',
-                        credentials: 'include'
+                        credentials: 'include',
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
 
                     if (res.ok) {
@@ -80,9 +84,13 @@ export default function AdminGuidelinesPage() {
 
         const method = editingId ? 'PATCH' : 'POST';
 
+        const token = localStorage.getItem('token');
         const res = await fetch(url, {
             method,
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(formData),
             credentials: 'include'
         });

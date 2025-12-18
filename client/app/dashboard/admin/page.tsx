@@ -18,8 +18,10 @@ export default function AdminDashboardPage() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
+                const token = localStorage.getItem('token');
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/stats`, {
-                    credentials: 'include', // Send the cookie
+                    credentials: 'include',
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
                     const data = await res.json();

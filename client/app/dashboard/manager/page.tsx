@@ -14,8 +14,10 @@ export default function ManagerDashboard() {
 
     const fetchData = async () => {
         try {
+            const token = localStorage.getItem('token');
             const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports/stats`, {
-                credentials: 'include'
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (statsRes.ok) setStats(await statsRes.json());
         } catch (error) {
@@ -30,8 +32,10 @@ export default function ManagerDashboard() {
     useEffect(() => {
         const fetchReports = async () => {
             try {
+                const token = localStorage.getItem('token');
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports?limit=5`, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
                     const data = await res.json();

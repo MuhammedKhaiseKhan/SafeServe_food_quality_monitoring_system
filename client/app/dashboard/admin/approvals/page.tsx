@@ -15,8 +15,10 @@ export default function AdminApprovalsPage() {
 
     const fetchReports = async (pageNum = 1) => {
         setLoading(true);
+        const token = localStorage.getItem('token');
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports?page=${pageNum}&limit=10`, {
-            credentials: 'include'
+            credentials: 'include',
+            headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
             const data = await res.json();
@@ -32,9 +34,13 @@ export default function AdminApprovalsPage() {
     }, []);
 
     const handleStatusUpdate = async (id: number, status: string) => {
+        const token = localStorage.getItem('token');
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports/${id}/status`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ status }),
             credentials: 'include'
         });

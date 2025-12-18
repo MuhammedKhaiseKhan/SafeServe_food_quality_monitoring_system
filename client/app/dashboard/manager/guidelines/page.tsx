@@ -15,8 +15,10 @@ export default function GuidelinesPage() {
     useEffect(() => {
         const fetchGuidelines = async () => {
             try {
+                const token = localStorage.getItem('token');
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/guidelines`, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) setGuidelines(await res.json());
             } catch (error) {

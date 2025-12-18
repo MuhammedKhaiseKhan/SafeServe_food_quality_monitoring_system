@@ -19,8 +19,10 @@ export default function InspectorDashboard() {
 
     useEffect(() => {
         const fetchForms = async () => {
+            const token = localStorage.getItem('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/forms`, {
-                credentials: 'include'
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setForms(await res.json());
         };
@@ -31,8 +33,10 @@ export default function InspectorDashboard() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
+                const token = localStorage.getItem('token');
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/stats`, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -51,10 +55,12 @@ export default function InspectorDashboard() {
         setLoading(true);
 
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ formId: selectedForm.id, data: formData }),
                 credentials: 'include' // Important for cookie

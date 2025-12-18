@@ -38,8 +38,10 @@ export default function AdminFormsPage() {
     const fetchForms = async () => {
         setIsLoading(true);
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/forms`, {
-                credentials: 'include'
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
                 const data = await res.json();
@@ -84,9 +86,13 @@ export default function AdminFormsPage() {
         const method = editingId ? 'PUT' : 'POST';
 
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ title, structure: fields }),
                 credentials: 'include'
             });
@@ -119,9 +125,11 @@ export default function AdminFormsPage() {
 
     const confirmDelete = async (id: number) => {
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/forms/${id}`, {
                 method: 'DELETE',
-                credentials: 'include'
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (res.ok) {
