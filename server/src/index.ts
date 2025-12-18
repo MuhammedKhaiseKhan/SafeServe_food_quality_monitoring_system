@@ -12,11 +12,8 @@ const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin: "*",
-    credentials: true
-}));
-app.use(helmet());
+app.use(cors());
+// app.use(helmet());
 app.use(morgan('dev'));
 
 import authRoutes from './routes/auth.routes';
