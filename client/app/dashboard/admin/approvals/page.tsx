@@ -15,7 +15,7 @@ export default function AdminApprovalsPage() {
 
     const fetchReports = async (pageNum = 1) => {
         setLoading(true);
-        const res = await fetch(`http://localhost:4000/reports?page=${pageNum}&limit=10`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports?page=${pageNum}&limit=10`, {
             credentials: 'include'
         });
         if (res.ok) {
@@ -32,7 +32,7 @@ export default function AdminApprovalsPage() {
     }, []);
 
     const handleStatusUpdate = async (id: number, status: string) => {
-        const res = await fetch(`http://localhost:4000/reports/${id}/status`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports/${id}/status`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status }),

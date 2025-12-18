@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -27,7 +27,7 @@ model User {
 model InspectionForm {
   id        Int      @id @default(autoincrement())
   title     String
-  structure String   // JSON String
+  structure String   @db.Text // JSON String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -38,9 +38,9 @@ model InspectionReport {
   id          Int          @id @default(autoincrement())
   inspectorId Int
   formId      Int
-  data        String       // JSON String
+  data        String       @db.Text // JSON String
   status      String       @default("PENDING")
-  aiSummary   String?      
+  aiSummary   String?      @db.Text
   score       Int?         
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -52,7 +52,7 @@ model InspectionReport {
 model Guideline {
   id        Int      @id @default(autoincrement())
   title     String
-  content   String   
+  content   String   @db.Text
   category  String   @default("General") // e.g., 'Food Storage', 'Hygiene'
   severity  String   @default("Minor")   // 'Minor', 'Major', 'Critical'
   roleTarget String?   

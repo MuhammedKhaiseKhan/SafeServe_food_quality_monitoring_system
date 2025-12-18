@@ -16,7 +16,7 @@ export default function InspectorHistoryPage() {
     const fetchReports = async (pageNum = 1) => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:4000/reports?page=${pageNum}&limit=10`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports?page=${pageNum}&limit=10`, {
                 credentials: 'include'
             });
             if (res.ok) {
