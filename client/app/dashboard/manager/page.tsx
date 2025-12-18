@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { ClipboardList, AlertCircle, CheckCircle2, BarChart3, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SpotlightCard } from '@/components/reactbits/SpotlightCard';
 
 export default function ManagerDashboard() {
     const [stats, setStats] = useState<any>(null);
@@ -19,7 +20,10 @@ export default function ManagerDashboard() {
         if (statsRes.ok) setStats(await statsRes.json());
 
         const reportsRes = await fetch('http://localhost:4000/reports', { headers });
-        if (reportsRes.ok) setReports(await reportsRes.json());
+        if (reportsRes.ok) {
+            const data = await reportsRes.json();
+            setReports(data.reports);
+        }
     };
 
     useEffect(() => {
@@ -39,7 +43,7 @@ export default function ManagerDashboard() {
 
             {/* Stats Cards */}
             <div className="grid gap-4 md:grid-cols-4">
-                <Card className="bg-white border-l-4 border-l-blue-500 shadow-sm">
+                <SpotlightCard className="bg-white border-l-4 border-l-blue-500" spotlightColor="rgba(59, 130, 246, 0.2)">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-gray-600">Total Reports</CardTitle>
                         <ClipboardList className="h-4 w-4 text-blue-500" />
@@ -48,8 +52,8 @@ export default function ManagerDashboard() {
                         <div className="text-2xl font-bold text-gray-900">{stats.totalReports}</div>
                         <p className="text-xs text-gray-500 mt-1">All time submissions</p>
                     </CardContent>
-                </Card>
-                <Card className="bg-white border-l-4 border-l-amber-500 shadow-sm">
+                </SpotlightCard>
+                <SpotlightCard className="bg-white border-l-4 border-l-amber-500" spotlightColor="rgba(245, 158, 11, 0.2)">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-gray-600">Pending Review</CardTitle>
                         <AlertCircle className="h-4 w-4 text-amber-500" />
@@ -58,8 +62,8 @@ export default function ManagerDashboard() {
                         <div className="text-2xl font-bold text-gray-900">{stats.pending}</div>
                         <p className="text-xs text-gray-500 mt-1">Awaiting approval</p>
                     </CardContent>
-                </Card>
-                <Card className="bg-white border-l-4 border-l-green-500 shadow-sm">
+                </SpotlightCard>
+                <SpotlightCard className="bg-white border-l-4 border-l-green-500" spotlightColor="rgba(34, 197, 94, 0.2)">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-gray-600">Approved</CardTitle>
                         <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -68,8 +72,8 @@ export default function ManagerDashboard() {
                         <div className="text-2xl font-bold text-gray-900">{stats.approved}</div>
                         <p className="text-xs text-gray-500 mt-1">Compliant reports</p>
                     </CardContent>
-                </Card>
-                <Card className="bg-white border-l-4 border-l-purple-500 shadow-sm">
+                </SpotlightCard>
+                <SpotlightCard className="bg-white border-l-4 border-l-purple-500" spotlightColor="rgba(168, 85, 247, 0.2)">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-gray-600">Avg Score</CardTitle>
                         <BarChart3 className="h-4 w-4 text-purple-500" />
@@ -78,7 +82,7 @@ export default function ManagerDashboard() {
                         <div className="text-2xl font-bold text-gray-900">{Math.round(stats.averageScore)}%</div>
                         <p className="text-xs text-gray-500 mt-1">Performance metric</p>
                     </CardContent>
-                </Card>
+                </SpotlightCard>
             </div>
 
             <Card className="shadow-sm border-gray-100">
@@ -99,7 +103,7 @@ export default function ManagerDashboard() {
                         </TableHeader>
                         <TableBody>
                             {reports.map((report) => (
-                                <TableRow key={report.id} className="hover:bg-slate-50/50">
+                                <TableRow key={report.id} className="hover:bg-slate-50/80 transition-colors duration-200">
                                     <TableCell className="font-medium">{new Date(report.createdAt).toLocaleDateString()}</TableCell>
                                     <TableCell>{report.inspector.name}</TableCell>
                                     <TableCell>{report.form.title}</TableCell>

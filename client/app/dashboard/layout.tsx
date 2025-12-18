@@ -143,7 +143,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </Sheet>
                 </header>
 
-                <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">
+                <main key={pathname} className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {children}
                 </main>
             </div>
@@ -155,12 +155,12 @@ function NavLink({ href, icon, label, active }: { href: string; icon: React.Reac
     return (
         <Link
             href={href}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${active
-                    ? 'bg-green-50 text-green-700 shadow-sm'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${active
+                ? 'bg-green-50 text-green-700 shadow-sm translate-x-1'
+                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:translate-x-1'
                 }`}
         >
-            <span className={active ? 'text-green-600' : 'text-gray-400'}>{icon}</span>
+            <span className={`transition-transform duration-200 group-hover:scale-110 ${active ? 'text-green-600' : 'text-gray-400 group-hover:text-green-500'}`}>{icon}</span>
             {label}
         </Link>
     );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +11,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { AlertCircle, Loader2 } from 'lucide-react';
+import { BlurText } from '@/components/reactbits/BlurText';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 const loginSchema = z.object({
     email: z.string().min(1, 'Email is required').email('Invalid email address'),
@@ -22,6 +25,22 @@ type LoginValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+
+    const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+
+    const roles = [
+        { name: 'Inspector', emoji: '🔦', color: 'text-green-600' },
+        { name: 'Kitchen Manager', emoji: '👨‍🍳', color: 'text-blue-600' },
+        { name: 'Hotel Manager', emoji: '🏨', color: 'text-purple-600' },
+        { name: 'Admin', emoji: '🛡️', color: 'text-red-500' },
+    ];
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+        }, 2000);
+        return () => clearInterval(interval);
+    }, []);
 
     const { register, handleSubmit, formState: { errors } } = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
@@ -67,62 +86,96 @@ export default function LoginPage() {
             <div className="hidden md:block bg-cover bg-center relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1577106263724-2c8e03bfe9cf?q=80&w=2662&auto=format&fit=crop')" }}>
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute bottom-10 left-10 text-white p-6">
-                    <h2 className="text-4xl font-bold mb-2">Excellence in Every Detail.</h2>
-                    <p className="opacity-90">Ensure the highest quality standards for your guests.</p>
+                    <BlurText
+                        text="Excellence in Every Detail."
+                        className="text-4xl font-bold mb-2 text-left"
+                        delay={0.2}
+                    />
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 0.9, y: 0 }}
+                        transition={{ delay: 1, duration: 0.8 }}
+                    >
+                        Ensure the highest quality standards for your guests.
+                    </motion.p>
                 </div>
             </div>
 
             {/* Right: Login Form */}
-            <div className="flex items-center justify-center bg-gray-50 p-6">
-                <Card className="w-full max-w-md shadow-2xl border-0">
-                    <CardHeader className="space-y-1 text-center">
-                        <div className="mx-auto w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mb-4">S</div>
-                        <CardTitle className="text-2xl font-bold">Sign in to SafeServe</CardTitle>
-                        <CardDescription>Enter your credentials to access the system</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className={errors.email ? 'text-red-500' : ''}>Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="name@hotel.com"
-                                    {...register('email')}
-                                    className={`h-11 ${errors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
-                                />
-                                {errors.email && (
-                                    <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
-                                        <AlertCircle size={12} /> {errors.email.message}
-                                    </p>
-                                )}
+            <div className="relative flex items-center justify-center bg-gray-50 p-6 overflow-hidden">
+                <div className="relative z-10 w-full max-w-md">
+                    <Card className="w-full shadow-xl animate-in fade-in zoom-in-95 duration-500 slide-in-from-bottom-4 bg-white border-0">
+                        <CardHeader className="space-y-1 text-center">
+                            <div className="mx-auto w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-sm relative overflow-hidden ring-1 ring-gray-100">
+                                <AnimatePresence mode="wait">
+                                    <motion.span
+                                        key={roles[currentRoleIndex].name}
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        exit={{ y: -20, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className={`absolute select-none ${roles[currentRoleIndex].color}`}
+                                    >
+                                        {roles[currentRoleIndex].emoji}
+                                    </motion.span>
+                                </AnimatePresence>
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="password" className={errors.password ? 'text-red-500' : ''}>Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    {...register('password')}
-                                    className={`h-11 ${errors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
-                                />
-                                {errors.password && (
-                                    <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
-                                        <AlertCircle size={12} /> {errors.password.message}
-                                    </p>
-                                )}
+                            <div className="h-6 relative overflow-hidden mb-2">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={roles[currentRoleIndex].name}
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        exit={{ y: -20, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className={`absolute w-full text-center text-sm font-semibold ${roles[currentRoleIndex].color}`}
+                                    >
+                                        {roles[currentRoleIndex].name}
+                                    </motion.div>
+                                </AnimatePresence>
                             </div>
-                            <Button type="submit" className="w-full h-11 bg-green-700 hover:bg-green-800 text-lg" disabled={loading}>
-                                {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Authenticating...</> : 'Sign In'}
-                            </Button>
-
-                            <div className="text-center text-sm text-gray-500 mt-4">
-                                Demo? Use <span className="font-mono bg-gray-100 px-1">admin@hotel.com</span> / <span className="font-mono bg-gray-100 px-1">admin123</span>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
+                            <CardTitle className="text-2xl font-bold text-gray-900">Sign in to SafeServe</CardTitle>
+                            <CardDescription className="text-gray-500">Enter your credentials to access the system</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="email" className={errors.email ? 'text-red-500' : 'text-gray-700'}>Email</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        placeholder="name@hotel.com"
+                                        {...register('email')}
+                                        className={`h-11 ${errors.email ? 'border-red-500 focus-visible:ring-red-500' : 'border-gray-200 focus-visible:ring-green-100'}`}
+                                    />
+                                    {errors.email && (
+                                        <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
+                                            <AlertCircle size={12} /> {errors.email.message}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="password" className={errors.password ? 'text-red-500' : 'text-gray-700'}>Password</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        {...register('password')}
+                                        className={`h-11 ${errors.password ? 'border-red-500 focus-visible:ring-red-500' : 'border-gray-200 focus-visible:ring-green-100'}`}
+                                    />
+                                    {errors.password && (
+                                        <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
+                                            <AlertCircle size={12} /> {errors.password.message}
+                                        </p>
+                                    )}
+                                </div>
+                                <Button type="submit" className="w-full h-11 bg-green-700 hover:bg-green-800 text-lg shadow-md hover:shadow-lg transition-all duration-300" disabled={loading}>
+                                    {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Authenticating...</> : 'Sign In'}
+                                </Button>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );
 }
-import Link from 'next/link';

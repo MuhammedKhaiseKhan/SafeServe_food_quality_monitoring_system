@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { prisma } from '../lib/prisma';
+import prisma from '../utils/prisma';
 
 export const getDashboardStats = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -10,9 +10,9 @@ export const getDashboardStats = async (req: Request, res: Response): Promise<vo
             pendingReportsCount
         ] = await Promise.all([
             prisma.user.count(),
-            prisma.form.count(),
+            prisma.inspectionForm.count(),
             prisma.guideline.count(),
-            prisma.report.count({ where: { status: 'PENDING' } })
+            prisma.inspectionReport.count({ where: { status: 'PENDING' } })
         ]);
 
         res.json({

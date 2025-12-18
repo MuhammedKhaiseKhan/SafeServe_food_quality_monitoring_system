@@ -36,4 +36,28 @@ export const getFormById = async (req: Request, res: Response): Promise<void> =>
     } catch (error) {
         res.status(500).json({ message: 'Error fetching form' });
     }
-}
+};
+
+export const updateForm = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { title, structure } = req.body;
+        const form = await prisma.inspectionForm.update({
+            where: { id: Number(id) },
+            data: { title, structure: JSON.stringify(structure ?? {}) },
+        });
+        res.json({ ...form, structure: JSON.parse(form.structure) });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating form' });
+    }
+};
+
+export const deleteForm = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        await prisma.inspectionForm.delete({ where: { id: Number(id) } });
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting form' });
+    }
+};

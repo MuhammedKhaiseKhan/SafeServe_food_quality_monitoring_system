@@ -20,12 +20,14 @@ import reportRoutes from './routes/reports.routes';
 import guidelineRoutes from './routes/guidelines.routes';
 
 import userRoutes from './routes/users.routes';
+import statsRoutes from './routes/stats.routes';
 
 app.use('/auth', authRoutes);
 app.use('/forms', formRoutes);
 app.use('/reports', reportRoutes);
 app.use('/guidelines', guidelineRoutes);
 app.use('/users', userRoutes);
+app.use('/stats', statsRoutes);
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date() });

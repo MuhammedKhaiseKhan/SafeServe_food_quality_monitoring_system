@@ -24,19 +24,26 @@ export default function AdminUsersPage() {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [sheetMode, setSheetMode] = useState<'edit' | 'create'>('edit');
     const [currentUser, setCurrentUser] = useState<any | null>(null);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     // Form States
     const [formData, setFormData] = useState({ name: '', email: '', role: '' });
     const [passwordData, setPasswordData] = useState({ password: '' });
     const [createData, setCreateData] = useState({ name: '', email: '', password: '', role: 'INSPECTOR' });
 
-    const fetchUsers = async () => {
+    const fetchUsers = async (pageNum = 1) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/users', {
+            const res = await fetch(`http://localhost:4000/users?page=${pageNum}&limit=10`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (res.ok) setUsers(await res.json());
+            if (res.ok) {
+                const data = await res.json();
+                setUsers(data.users);
+                setTotalPages(data.totalPages);
+                setPage(data.page);
+            }
         } catch (err) {
             toast.error('Failed to load users');
         } finally {
@@ -218,11 +225,35 @@ export default function AdminUsersPage() {
                             </TableBody>
                         </Table>
                     </div>
+
+                    <div className="flex items-center justify-between space-x-2 py-4">
+                        <div className="text-sm text-gray-500">
+                            Page {page} of {totalPages}
+                        </div>
+                        <div className="space-x-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => fetchUsers(page - 1)}
+                                disabled={page <= 1 || loading}
+                            >
+                                Previous
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => fetchUsers(page + 1)}
+                                disabled={page >= totalPages || loading}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
 
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                <SheetContent className="sm:max-w-md overflow-y-auto">
+                <SheetContent className="sm:max-w-md overflow-y-auto p-6">
                     <SheetHeader>
                         <SheetTitle>{sheetMode === 'create' ? 'Add New User' : 'Edit User'}</SheetTitle>
                         <SheetDescription>
