@@ -100,37 +100,39 @@ export default function HotelManagerDashboard() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-slate-50">
-                                <TableHead>Date</TableHead>
-                                <TableHead>Inspector</TableHead>
-                                <TableHead>Form</TableHead>
-                                <TableHead>Score</TableHead>
-                                <TableHead>Status</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {reports.length === 0 && <TableRow><TableCell colSpan={5} className="text-center py-6 text-gray-500">No approved data available.</TableCell></TableRow>}
-                            {reports.map((report) => (
-                                <TableRow key={report.id} className="hover:bg-slate-50/80 transition-colors duration-200">
-                                    <TableCell className="font-medium">{new Date(report.createdAt).toLocaleDateString()}</TableCell>
-                                    <TableCell>{report.inspector.name}</TableCell>
-                                    <TableCell>{report.form.title}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={report.score >= 90 ? 'default' : 'secondary'} className={report.score >= 90 ? 'bg-green-600' : 'bg-gray-600'}>
-                                            {report.score}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge variant="outline" className="border-green-500 text-green-700 bg-green-50">
-                                            Verified
-                                        </Badge>
-                                    </TableCell>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="bg-slate-50">
+                                    <TableHead>Date</TableHead>
+                                    <TableHead>Inspector</TableHead>
+                                    <TableHead>Form</TableHead>
+                                    <TableHead>Score</TableHead>
+                                    <TableHead>Status</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {reports.length === 0 && <TableRow><TableCell colSpan={5} className="text-center py-6 text-gray-500">No approved data available.</TableCell></TableRow>}
+                                {reports.map((report) => (
+                                    <TableRow key={report.id} className="hover:bg-slate-50/80 transition-colors duration-200">
+                                        <TableCell className="font-medium">{new Date(report.createdAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{report.inspector.name}</TableCell>
+                                        <TableCell>{report.form.title}</TableCell>
+                                        <TableCell>
+                                            <Badge variant={report.score >= 90 ? 'default' : 'secondary'} className={report.score >= 90 ? 'bg-green-600' : 'bg-gray-600'}>
+                                                {report.score}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline" className="border-green-500 text-green-700 bg-green-50">
+                                                Verified
+                                            </Badge>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
         </div>

@@ -127,7 +127,7 @@ export default function AdminGuidelinesPage() {
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900">Safety Standards</h2>
                     <p className="text-gray-500">Define and manage food safety protocols for your organization.</p>
                 </div>
-                <Button onClick={() => setIsCreating(true)} className={isCreating ? "hidden" : "bg-green-600 hover:bg-green-700"}>
+                <Button onClick={() => { setIsCreating(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className={isCreating ? "hidden" : "bg-green-600 hover:bg-green-700"}>
                     <Plus className="mr-2 h-4 w-4" /> Add New Guideline
                 </Button>
             </div>
@@ -213,7 +213,7 @@ export default function AdminGuidelinesPage() {
                         <CardHeader className="pb-3">
                             <div className="flex justify-between items-start mb-2">
                                 {getSeverityBadge(g.severity)}
-                                <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                                <div className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex gap-1">
                                     <Button onClick={() => handleEdit(g)} variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-blue-600"><Edit2 size={14} /></Button>
                                     <Button onClick={() => handleDelete(g.id)} variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-red-600"><Trash2 size={14} /></Button>
                                 </div>

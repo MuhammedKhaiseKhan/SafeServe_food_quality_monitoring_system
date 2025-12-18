@@ -109,46 +109,48 @@ export default function ManagerDashboard() {
                     <CardTitle>Recent Inspection Reports</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-slate-50">
-                                <TableHead className="w-[100px]">Date</TableHead>
-                                <TableHead>Inspector</TableHead>
-                                <TableHead>Form</TableHead>
-                                <TableHead>Score</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {reports.map((report) => (
-                                <TableRow key={report.id} className="hover:bg-slate-50/80 transition-colors duration-200">
-                                    <TableCell className="font-medium">{new Date(report.createdAt).toLocaleDateString()}</TableCell>
-                                    <TableCell>{report.inspector.name}</TableCell>
-                                    <TableCell>{report.form.title}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={report.score >= 80 ? 'default' : 'destructive'} className={report.score >= 80 ? 'bg-green-600' : 'bg-red-600'}>
-                                            {report.score}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge variant="outline" className={`
-                                            ${report.status === 'APPROVED' ? 'border-green-500 text-green-600' :
-                                                report.status === 'REJECTED' ? 'border-red-500 text-red-600' :
-                                                    'border-amber-500 text-amber-600'}
-                                        `}>
-                                            {report.status}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                            <Eye className="h-4 w-4 text-gray-500" />
-                                        </Button>
-                                    </TableCell>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="bg-slate-50">
+                                    <TableHead className="w-[100px]">Date</TableHead>
+                                    <TableHead>Inspector</TableHead>
+                                    <TableHead>Form</TableHead>
+                                    <TableHead>Score</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead className="text-right">Action</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {reports.map((report) => (
+                                    <TableRow key={report.id} className="hover:bg-slate-50/80 transition-colors duration-200">
+                                        <TableCell className="font-medium">{new Date(report.createdAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{report.inspector.name}</TableCell>
+                                        <TableCell>{report.form.title}</TableCell>
+                                        <TableCell>
+                                            <Badge variant={report.score >= 80 ? 'default' : 'destructive'} className={report.score >= 80 ? 'bg-green-600' : 'bg-red-600'}>
+                                                {report.score}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline" className={`
+                                                ${report.status === 'APPROVED' ? 'border-green-500 text-green-600' :
+                                                    report.status === 'REJECTED' ? 'border-red-500 text-red-600' :
+                                                        'border-amber-500 text-amber-600'}
+                                            `}>
+                                                {report.status}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                                <Eye className="h-4 w-4 text-gray-500" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
         </div>

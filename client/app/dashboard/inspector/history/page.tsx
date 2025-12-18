@@ -70,7 +70,7 @@ export default function InspectorHistoryPage() {
                     {loading ? (
                         <div className="text-center py-12 text-gray-400">Loading your history...</div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto max-w-[85vw] md:max-w-full">
                             <Table>
                                 <TableHeader>
                                     <TableRow>

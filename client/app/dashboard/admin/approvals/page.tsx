@@ -56,7 +56,7 @@ export default function AdminApprovalsPage() {
             <Card>
                 <CardHeader><CardTitle>Pending Inspection Reports</CardTitle></CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto max-w-[85vw] md:max-w-full">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -96,7 +96,7 @@ export default function AdminApprovalsPage() {
             <Card className="mt-8">
                 <CardHeader><CardTitle>History</CardTitle></CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto max-w-[85vw] md:max-w-full">
                         <Table>
                             <TableHeader>
                                 <TableRow>
