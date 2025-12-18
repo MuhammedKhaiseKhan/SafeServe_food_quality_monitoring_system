@@ -59,7 +59,8 @@ export default function LoginPage() {
             const data = await res.json();
 
             if (res.ok) {
-                // Token is now in a cookie, no need to store it manually
+                // Token is now in a cookie, AND returned in body for fallback
+                localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 toast.success(`Welcome back, ${data.user.name}`);
 
