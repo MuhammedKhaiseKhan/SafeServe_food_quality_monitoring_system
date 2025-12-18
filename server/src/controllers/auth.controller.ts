@@ -64,8 +64,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         console.log('Login Successful, setting cookie for user:', user.email);
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false, // Force false for localhost debugging
-            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production', // True in production (HTTPS)
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // None for cross-site (Vercel->Render)
             maxAge: 8 * 60 * 60 * 1000 // 8 hours
         });
 
