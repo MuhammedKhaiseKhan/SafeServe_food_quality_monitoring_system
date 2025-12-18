@@ -16,9 +16,8 @@ export default function InspectorHistoryPage() {
     const fetchReports = async (pageNum = 1) => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
             const res = await fetch(`http://localhost:4000/reports?page=${pageNum}&limit=10`, {
-                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
             });
             if (res.ok) {
                 const data = await res.json();
@@ -27,7 +26,7 @@ export default function InspectorHistoryPage() {
                 setPage(data.page);
             }
         } catch (error) {
-            console.error('Failed to load reports');
+            console.error('Failed to load reports', error);
         } finally {
             setLoading(false);
         }

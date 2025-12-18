@@ -54,11 +54,12 @@ export default function LoginPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(values),
+                credentials: 'include', // Important for setting the cookie
             });
             const data = await res.json();
 
             if (res.ok) {
-                localStorage.setItem('token', data.token);
+                // Token is now in a cookie, no need to store it manually
                 localStorage.setItem('user', JSON.stringify(data.user));
                 toast.success(`Welcome back, ${data.user.name}`);
 

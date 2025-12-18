@@ -24,10 +24,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const [user, setUser] = useState<{ name: string; role: string } | null>(null);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
         const userData = localStorage.getItem('user');
 
-        if (!token || !userData) {
+        if (!userData) {
             router.push('/login');
             return;
         }
@@ -38,8 +37,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (!user) return <div className="flex items-center justify-center min-h-screen text-green-600">Loading SafeServe...</div>;
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
+        // Clear user data
         localStorage.removeItem('user');
+
+        // Optional: Call backend to clear cookie
+        // For now, simple redirect is enough as cookie will be ignored/replaced next login
         router.push('/login');
     };
 

@@ -15,9 +15,8 @@ export default function AdminApprovalsPage() {
 
     const fetchReports = async (pageNum = 1) => {
         setLoading(true);
-        const token = localStorage.getItem('token');
         const res = await fetch(`http://localhost:4000/reports?page=${pageNum}&limit=10`, {
-            headers: { Authorization: `Bearer ${token}` },
+            credentials: 'include'
         });
         if (res.ok) {
             const data = await res.json();
@@ -33,11 +32,11 @@ export default function AdminApprovalsPage() {
     }, []);
 
     const handleStatusUpdate = async (id: number, status: string) => {
-        const token = localStorage.getItem('token');
         const res = await fetch(`http://localhost:4000/reports/${id}/status`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status }),
+            credentials: 'include'
         });
         if (res.ok) {
             toast.success(`Report ${status}`);

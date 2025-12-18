@@ -14,11 +14,14 @@ export default function GuidelinesPage() {
 
     useEffect(() => {
         const fetchGuidelines = async () => {
-            const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/guidelines', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (res.ok) setGuidelines(await res.json());
+            try {
+                const res = await fetch('http://localhost:4000/guidelines', {
+                    credentials: 'include'
+                });
+                if (res.ok) setGuidelines(await res.json());
+            } catch (error) {
+                console.error("Failed to fetch guidelines");
+            }
         };
         fetchGuidelines();
     }, []);
