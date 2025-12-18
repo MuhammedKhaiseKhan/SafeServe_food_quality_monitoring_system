@@ -13,7 +13,7 @@ export default function HotelManagerDashboard() {
 
     const fetchStats = async () => {
         try {
-            const res = await fetch('http://localhost:4000/reports/stats', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports/stats`, {
                 credentials: 'include'
             });
             if (res.ok) setStats(await res.json());
@@ -24,7 +24,7 @@ export default function HotelManagerDashboard() {
 
     const fetchReports = async () => {
         try {
-            const res = await fetch('http://localhost:4000/reports?limit=10', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports?limit=10`, {
                 credentials: 'include'
             });
             if (res.ok) {

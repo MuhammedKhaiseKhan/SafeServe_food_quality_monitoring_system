@@ -25,7 +25,7 @@ export default function AdminGuidelinesPage() {
 
     const fetchGuidelines = async () => {
         try {
-            const res = await fetch('http://localhost:4000/guidelines', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/guidelines`, {
                 credentials: 'include'
             });
             if (res.ok) setGuidelines(await res.json());
@@ -55,7 +55,7 @@ export default function AdminGuidelinesPage() {
             action: {
                 label: "Delete",
                 onClick: async () => {
-                    const res = await fetch(`http://localhost:4000/guidelines/${id}`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/guidelines/${id}`, {
                         method: 'DELETE',
                         credentials: 'include'
                     });
@@ -75,8 +75,8 @@ export default function AdminGuidelinesPage() {
         e.preventDefault();
 
         const url = editingId
-            ? `http://localhost:4000/guidelines/${editingId}`
-            : 'http://localhost:4000/guidelines';
+            ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/guidelines/${editingId}`
+            : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/guidelines`;
 
         const method = editingId ? 'PATCH' : 'POST';
 

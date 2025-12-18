@@ -14,7 +14,7 @@ export default function ManagerDashboard() {
 
     const fetchData = async () => {
         try {
-            const statsRes = await fetch('http://localhost:4000/reports/stats', {
+            const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports/stats`, {
                 credentials: 'include'
             });
             if (statsRes.ok) setStats(await statsRes.json());
@@ -30,7 +30,7 @@ export default function ManagerDashboard() {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const res = await fetch('http://localhost:4000/reports?limit=5', {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports?limit=5`, {
                     credentials: 'include'
                 });
                 if (res.ok) {

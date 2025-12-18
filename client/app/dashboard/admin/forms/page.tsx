@@ -38,7 +38,7 @@ export default function AdminFormsPage() {
     const fetchForms = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch('http://localhost:4000/forms', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/forms`, {
                 credentials: 'include'
             });
             if (res.ok) {
@@ -79,8 +79,8 @@ export default function AdminFormsPage() {
 
     const handleSave = async () => {
         const url = editingId
-            ? `http://localhost:4000/forms/${editingId}`
-            : 'http://localhost:4000/forms';
+            ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/forms/${editingId}`
+            : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/forms`;
         const method = editingId ? 'PUT' : 'POST';
 
         try {
@@ -119,7 +119,7 @@ export default function AdminFormsPage() {
 
     const confirmDelete = async (id: number) => {
         try {
-            const res = await fetch(`http://localhost:4000/forms/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/forms/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });

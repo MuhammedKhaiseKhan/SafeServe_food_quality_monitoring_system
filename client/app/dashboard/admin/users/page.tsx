@@ -35,7 +35,7 @@ export default function AdminUsersPage() {
     const fetchUsers = async (pageNum = 1) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:4000/users?page=${pageNum}&limit=10`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/users?page=${pageNum}&limit=10`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.ok) {
@@ -76,7 +76,7 @@ export default function AdminUsersPage() {
     const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:4000/users', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(createData),
@@ -95,7 +95,7 @@ export default function AdminUsersPage() {
     const handleUpdateProfile = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:4000/users/${selectedUser.id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/users/${selectedUser.id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(formData),
@@ -113,7 +113,7 @@ export default function AdminUsersPage() {
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:4000/users/${selectedUser.id}/password`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/users/${selectedUser.id}/password`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(passwordData),
@@ -136,7 +136,7 @@ export default function AdminUsersPage() {
                 label: "Delete",
                 onClick: async () => {
                     const token = localStorage.getItem('token');
-                    const res = await fetch(`http://localhost:4000/users/${id}`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/users/${id}`, {
                         method: 'DELETE',
                         headers: { Authorization: `Bearer ${token}` },
                         credentials: 'include'

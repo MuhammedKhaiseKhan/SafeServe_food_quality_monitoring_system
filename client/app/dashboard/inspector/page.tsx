@@ -19,7 +19,7 @@ export default function InspectorDashboard() {
 
     useEffect(() => {
         const fetchForms = async () => {
-            const res = await fetch('http://localhost:4000/forms', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/forms`, {
                 credentials: 'include'
             });
             if (res.ok) setForms(await res.json());
@@ -31,7 +31,7 @@ export default function InspectorDashboard() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await fetch('http://localhost:4000/stats', {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/stats`, {
                     credentials: 'include'
                 });
                 if (res.ok) {
@@ -51,7 +51,7 @@ export default function InspectorDashboard() {
         setLoading(true);
 
         try {
-            const res = await fetch('http://localhost:4000/reports', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/reports`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
