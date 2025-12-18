@@ -11,25 +11,37 @@ export default function HotelManagerDashboard() {
     const [stats, setStats] = useState<any>(null);
     const [reports, setReports] = useState<any[]>([]);
 
-    const fetchData = async () => {
-        const token = localStorage.getItem('token');
-        const headers = { Authorization: `Bearer ${token}` };
+    const fetchStats = async () => {
+        try {
+            const res = await fetch('http://localhost:4000/reports/stats', {
+                credentials: 'include'
+            });
+            if (res.ok) setStats(await res.json());
+        } catch (error) {
+            console.error('Failed to fetch stats:', error);
+        }
+    };
 
-        const statsRes = await fetch('http://localhost:4000/reports/stats', { headers });
-        if (statsRes.ok) setStats(await statsRes.json());
-
-        const reportsRes = await fetch('http://localhost:4000/reports', { headers });
-        if (reportsRes.ok) {
-            const data = await reportsRes.json();
-            const allReports = data.reports;
-            // Filter to only show APPROVED reports as per requirements
-            const approvedReports = allReports.filter((r: any) => r.status === 'APPROVED');
-            setReports(approvedReports);
+    const fetchReports = async () => {
+        try {
+            const res = await fetch('http://localhost:4000/reports?limit=10', {
+                credentials: 'include'
+            });
+            if (res.ok) {
+                const data = await res.json();
+                const allReports = data.reports || [];
+                // Filter to only show APPROVED reports as per requirements
+                const approvedReports = allReports.filter((r: any) => r.status === 'APPROVED');
+                setReports(approvedReports);
+            }
+        } catch (error) {
+            console.error('Failed to fetch reports:', error);
         }
     };
 
     useEffect(() => {
-        fetchData();
+        fetchStats();
+        fetchReports();
     }, []);
 
     if (!stats) return <div className="text-gray-500 p-6">Loading dashboard data...</div>;

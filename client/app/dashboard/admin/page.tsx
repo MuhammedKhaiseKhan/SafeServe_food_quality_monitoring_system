@@ -17,10 +17,9 @@ export default function AdminDashboardPage() {
 
     useEffect(() => {
         const fetchStats = async () => {
-            const token = localStorage.getItem('token');
             try {
                 const res = await fetch('http://localhost:4000/stats', {
-                    headers: { Authorization: `Bearer ${token}` },
+                    credentials: 'include', // Send the cookie
                 });
                 if (res.ok) {
                     const data = await res.json();

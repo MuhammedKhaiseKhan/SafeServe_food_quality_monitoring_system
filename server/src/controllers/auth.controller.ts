@@ -61,7 +61,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
         const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET!, { expiresIn: '8h' });
 
-        res.status(200).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+        console.log('Login Successful, setting cookie for user:', user.email);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false, // Force false for localhost debugging
+            sameSite: 'lax',
+            maxAge: 8 * 60 * 60 * 1000 // 8 hours
+        });
+
+        res.status(200).json({ message: 'Login successful', user: { id: user.id, email: user.email, name: user.name, role: user.role } });
     } catch (error) {
         if (error instanceof z.ZodError) {
             res.status(400).json({ errors: (error as any).errors });

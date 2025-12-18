@@ -15,39 +15,62 @@ export default function InspectorDashboard() {
     const [formData, setFormData] = useState<any>({});
     const [reportSummary, setReportSummary] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
+    const [stats, setStats] = useState<any>(null); // New state for stats
 
     useEffect(() => {
         const fetchForms = async () => {
-            const token = localStorage.getItem('token');
             const res = await fetch('http://localhost:4000/forms', {
-                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
             });
             if (res.ok) setForms(await res.json());
         };
         fetchForms();
     }, []);
 
+    // New useEffect for fetching stats
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await fetch('http://localhost:4000/stats', {
+                    credentials: 'include'
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setStats(data);
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        const token = localStorage.getItem('token');
 
-        const res = await fetch('http://localhost:4000/reports', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ formId: selectedForm.id, data: formData }),
-        });
+        try {
+            const res = await fetch('http://localhost:4000/reports', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ formId: selectedForm.id, data: formData }),
+                credentials: 'include' // Important for cookie
+            });
 
-        setLoading(false);
-        if (res.ok) {
-            const report = await res.json();
-            setReportSummary(report.aiSummary);
-            toast.success('Report submitted successfully!');
-        } else {
-            toast.error('Failed to submit report');
+            if (res.ok) {
+                const report = await res.json();
+                setReportSummary(report.aiSummary);
+                toast.success('Report submitted successfully!');
+            } else {
+                toast.error('Failed to submit report');
+            }
+        } catch (error) {
+            toast.error('Something went wrong');
+        } finally {
+            setLoading(false);
         }
     };
 

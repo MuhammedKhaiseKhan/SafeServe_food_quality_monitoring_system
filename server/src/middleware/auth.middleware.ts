@@ -9,10 +9,18 @@ export interface AuthRequest extends Request {
 }
 
 export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    // Debug logging
+    console.log('Auth Middleware Check:');
+    console.log(' - Cookies:', req.cookies);
+    console.log(' - Auth Header:', req.headers['authorization']);
 
-    if (!token) return res.sendStatus(401);
+    // Check cookies first, fall back to header for flexibility (optional)
+    const token = req.cookies.token || (req.headers['authorization'] && req.headers['authorization'].split(' ')[1]);
+
+    if (!token) {
+        console.log(' -> No token found, sending 401');
+        return res.sendStatus(401);
+    }
 
     jwt.verify(token, process.env.JWT_SECRET as string, (err: any, user: any) => {
         if (err) return res.sendStatus(403);

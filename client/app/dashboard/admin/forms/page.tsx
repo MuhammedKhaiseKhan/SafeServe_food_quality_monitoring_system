@@ -37,10 +37,9 @@ export default function AdminFormsPage() {
 
     const fetchForms = async () => {
         setIsLoading(true);
-        const token = localStorage.getItem('token');
         try {
             const res = await fetch('http://localhost:4000/forms', {
-                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
             });
             if (res.ok) {
                 const data = await res.json();
@@ -79,7 +78,6 @@ export default function AdminFormsPage() {
     };
 
     const handleSave = async () => {
-        const token = localStorage.getItem('token');
         const url = editingId
             ? `http://localhost:4000/forms/${editingId}`
             : 'http://localhost:4000/forms';
@@ -88,8 +86,9 @@ export default function AdminFormsPage() {
         try {
             const res = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title, structure: fields }),
+                credentials: 'include'
             });
 
             if (res.ok) {
@@ -119,11 +118,10 @@ export default function AdminFormsPage() {
     };
 
     const confirmDelete = async (id: number) => {
-        const token = localStorage.getItem('token');
         try {
             const res = await fetch(`http://localhost:4000/forms/${id}`, {
                 method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
             });
 
             if (res.ok) {

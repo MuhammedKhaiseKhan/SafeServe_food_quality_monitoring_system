@@ -99,6 +99,7 @@ export default function AdminUsersPage() {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(formData),
+            credentials: 'include'
         });
 
         if (res.ok) {
@@ -116,6 +117,7 @@ export default function AdminUsersPage() {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(passwordData),
+            credentials: 'include'
         });
 
         if (res.ok) {
@@ -137,6 +139,7 @@ export default function AdminUsersPage() {
                     const res = await fetch(`http://localhost:4000/users/${id}`, {
                         method: 'DELETE',
                         headers: { Authorization: `Bearer ${token}` },
+                        credentials: 'include'
                     });
 
                     if (res.ok) {

@@ -24,11 +24,14 @@ export default function AdminGuidelinesPage() {
     const [editingId, setEditingId] = useState<number | null>(null);
 
     const fetchGuidelines = async () => {
-        const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:4000/guidelines', {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) setGuidelines(await res.json());
+        try {
+            const res = await fetch('http://localhost:4000/guidelines', {
+                credentials: 'include'
+            });
+            if (res.ok) setGuidelines(await res.json());
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     useEffect(() => {
@@ -52,10 +55,9 @@ export default function AdminGuidelinesPage() {
             action: {
                 label: "Delete",
                 onClick: async () => {
-                    const token = localStorage.getItem('token');
                     const res = await fetch(`http://localhost:4000/guidelines/${id}`, {
                         method: 'DELETE',
-                        headers: { Authorization: `Bearer ${token}` },
+                        credentials: 'include'
                     });
 
                     if (res.ok) {
@@ -71,7 +73,6 @@ export default function AdminGuidelinesPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const token = localStorage.getItem('token');
 
         const url = editingId
             ? `http://localhost:4000/guidelines/${editingId}`
@@ -81,8 +82,9 @@ export default function AdminGuidelinesPage() {
 
         const res = await fetch(url, {
             method,
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData),
+            credentials: 'include'
         });
 
         if (res.ok) {
