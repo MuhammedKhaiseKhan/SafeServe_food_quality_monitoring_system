@@ -4,10 +4,26 @@ import bcrypt from 'bcryptjs';
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
-        const users = await prisma.user.findMany({
-            select: { id: true, name: true, email: true, role: true, createdAt: true }
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const skip = (page - 1) * limit;
+
+        const [users, total] = await Promise.all([
+            prisma.user.findMany({
+                select: { id: true, name: true, email: true, role: true, createdAt: true },
+                skip,
+                take: limit,
+                orderBy: { createdAt: 'desc' }
+            }),
+            prisma.user.count()
+        ]);
+
+        res.json({
+            users,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit)
         });
-        res.json(users);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching users' });
     }

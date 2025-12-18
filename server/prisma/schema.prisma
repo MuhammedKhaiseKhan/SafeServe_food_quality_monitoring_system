@@ -46,7 +46,7 @@ model InspectionReport {
   updatedAt   DateTime     @updatedAt
 
   inspector User           @relation(fields: [inspectorId], references: [id])
-  form      InspectionForm @relation(fields: [formId], references: [id])
+  form      InspectionForm @relation(fields: [formId], references: [id], onDelete: Cascade)
 }
 
 model Guideline {

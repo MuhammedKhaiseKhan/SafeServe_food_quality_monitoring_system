@@ -9,15 +9,23 @@ import { toast } from 'sonner';
 
 export default function AdminApprovalsPage() {
     const [reports, setReports] = useState<any[]>([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false);
 
-    const fetchReports = async () => {
+    const fetchReports = async (pageNum = 1) => {
+        setLoading(true);
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:4000/reports', {
+        const res = await fetch(`http://localhost:4000/reports?page=${pageNum}&limit=10`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
-            setReports(await res.json());
+            const data = await res.json();
+            setReports(data.reports);
+            setTotalPages(data.totalPages);
+            setPage(data.page);
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -108,7 +116,32 @@ export default function AdminApprovalsPage() {
                         </Table>
                     </div>
                 </CardContent>
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-between px-6 pb-6">
+                        <div className="text-sm text-gray-500">
+                            Page {page} of {totalPages}
+                        </div>
+                        <div className="space-x-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => fetchReports(page - 1)}
+                                disabled={page <= 1 || loading}
+                            >
+                                Previous
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => fetchReports(page + 1)}
+                                disabled={page >= totalPages || loading}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </Card>
-        </div>
+        </div >
     );
 }

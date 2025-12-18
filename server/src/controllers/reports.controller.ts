@@ -9,7 +9,7 @@ export const submitReport = async (req: AuthRequest, res: Response): Promise<voi
         const inspectorId = req.user!.userId;
 
         // AI Evaluation
-        const { summary, score } = evaluateReport(data);
+        const { summary, score } = await evaluateReport(data);
 
         const report = await prisma.inspectionReport.create({
             data: {
@@ -31,24 +31,38 @@ export const submitReport = async (req: AuthRequest, res: Response): Promise<voi
 export const getReports = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { role, userId } = req.user!;
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const skip = (page - 1) * limit;
+
         let whereClause = {};
 
         if (role === 'INSPECTOR') {
             whereClause = { inspectorId: userId };
         }
-        // Managers/Admins see all
 
-        const reports = await prisma.inspectionReport.findMany({
-            where: whereClause,
-            include: {
-                inspector: { select: { name: true, email: true } },
-                form: { select: { title: true } },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
+        const [reports, total] = await Promise.all([
+            prisma.inspectionReport.findMany({
+                where: whereClause,
+                include: {
+                    inspector: { select: { name: true, email: true } },
+                    form: { select: { title: true } },
+                },
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: limit
+            }),
+            prisma.inspectionReport.count({ where: whereClause })
+        ]);
 
         const parsedReports = reports.map(r => ({ ...r, data: JSON.parse(r.data) }));
-        res.json(parsedReports);
+
+        res.json({
+            reports: parsedReports,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit)
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching reports' });
     }
