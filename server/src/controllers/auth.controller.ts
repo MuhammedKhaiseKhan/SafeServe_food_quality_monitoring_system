@@ -69,7 +69,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             maxAge: 8 * 60 * 60 * 1000 // 8 hours
         });
 
-        res.status(200).json({ message: 'Login successful', user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+        res.status(200).json({
+            message: 'Login successful',
+            token, // Return token for client-side storage (fallback for cross-site cookies)
+            user: { id: user.id, email: user.email, name: user.name, role: user.role }
+        });
     } catch (error) {
         if (error instanceof z.ZodError) {
             res.status(400).json({ errors: (error as any).errors });

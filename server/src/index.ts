@@ -10,6 +10,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+app.set('trust proxy', 1); // Required for secure cookies behind proxy (Render/Vercel)
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
@@ -19,7 +21,8 @@ app.use(cors({
         'http://localhost:3002',
         process.env.CLIENT_URL || ''
     ].filter(Boolean),
-    credentials: true
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'] // Explicitly allow Authorization header
 }));
 // app.use(helmet());
 app.use(morgan('dev'));

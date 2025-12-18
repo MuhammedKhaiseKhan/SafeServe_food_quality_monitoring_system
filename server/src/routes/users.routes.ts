@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { getAllUsers, updateUser, deleteUser, changePassword, createUser } from '../controllers/users.controller';
+import { authenticateToken, requireRole } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// In a real app, you'd add middleware here like: router.use(authenticate, requireAdmin)
+router.use(authenticateToken); // Protect all routes below
+router.use(requireRole(['ADMIN'])); // Only Admins can manage users
+
 router.get('/', getAllUsers);
 router.post('/', createUser);
 router.patch('/:id', updateUser);
