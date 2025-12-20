@@ -180,7 +180,7 @@ export default function AdminApprovalsPage() {
             </Card>
 
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                <SheetContent className="sm:max-w-xl overflow-y-auto">
+                <SheetContent className="sm:max-w-xl overflow-y-auto p-6">
                     <SheetHeader>
                         <SheetTitle className="flex items-center gap-2">
                             <FileText className="text-gray-500" /> Report Details
