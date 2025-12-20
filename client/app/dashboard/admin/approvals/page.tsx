@@ -180,8 +180,8 @@ export default function AdminApprovalsPage() {
             </Card>
 
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                <SheetContent className="sm:max-w-xl overflow-y-auto p-6">
-                    <SheetHeader>
+                <SheetContent className="sm:max-w-xl p-0 gap-0">
+                    <SheetHeader className="p-6 border-b">
                         <SheetTitle className="flex items-center gap-2">
                             <FileText className="text-gray-500" /> Report Details
                         </SheetTitle>
@@ -190,65 +190,67 @@ export default function AdminApprovalsPage() {
                         </SheetDescription>
                     </SheetHeader>
 
-                    {selectedReport && (
-                        <div className="mt-6 space-y-6">
-                            {/* AI Summary Section */}
-                            {selectedReport.aiSummary && (
-                                <div className="p-4 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 shadow-sm relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-2 opacity-5">
-                                        <Bot size={100} />
+                    <div className="flex-1 overflow-y-auto p-6">
+                        {selectedReport && (
+                            <div className="space-y-6">
+                                {/* AI Summary Section */}
+                                {selectedReport.aiSummary && (
+                                    <div className="p-4 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 shadow-sm relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 p-2 opacity-5">
+                                            <Bot size={100} />
+                                        </div>
+                                        <h4 className="flex items-center gap-2 font-bold text-indigo-900 mb-2">
+                                            <Sparkles size={16} className="text-indigo-600" /> AI Executive Summary
+                                        </h4>
+                                        <p className="text-sm text-indigo-800 leading-relaxed">
+                                            {selectedReport.aiSummary}
+                                        </p>
                                     </div>
-                                    <h4 className="flex items-center gap-2 font-bold text-indigo-900 mb-2">
-                                        <Sparkles size={16} className="text-indigo-600" /> AI Executive Summary
-                                    </h4>
-                                    <p className="text-sm text-indigo-800 leading-relaxed">
-                                        {selectedReport.aiSummary}
-                                    </p>
-                                </div>
-                            )}
+                                )}
 
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <p className="text-gray-500">Inspector</p>
-                                    <p className="font-medium">{selectedReport.inspector.name}</p>
+                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <p className="text-gray-500">Inspector</p>
+                                        <p className="font-medium">{selectedReport.inspector.name}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-500">Submission Date</p>
+                                        <p className="font-medium">{new Date(selectedReport.createdAt).toLocaleString()}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-500">Form Type</p>
+                                        <p className="font-medium">{selectedReport.form.title}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-500">Overall Score</p>
+                                        <Badge variant={selectedReport.score >= 80 ? 'default' : 'destructive'} className={selectedReport.score >= 80 ? 'bg-green-600' : 'bg-red-600'}>
+                                            {selectedReport.score}/100
+                                        </Badge>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-gray-500">Submission Date</p>
-                                    <p className="font-medium">{new Date(selectedReport.createdAt).toLocaleString()}</p>
-                                </div>
-                                <div>
-                                    <p className="text-gray-500">Form Type</p>
-                                    <p className="font-medium">{selectedReport.form.title}</p>
-                                </div>
-                                <div>
-                                    <p className="text-gray-500">Overall Score</p>
-                                    <Badge variant={selectedReport.score >= 80 ? 'default' : 'destructive'} className={selectedReport.score >= 80 ? 'bg-green-600' : 'bg-red-600'}>
-                                        {selectedReport.score}/100
-                                    </Badge>
+
+                                {/* Action Buttons for Pending Reports */}
+                                {selectedReport.status === 'PENDING' && (
+                                    <div className="flex gap-3 pt-4 border-t">
+                                        <Button className="flex-1 bg-green-600 hover:bg-green-700" onClick={() => handleStatusUpdate(selectedReport.id, 'APPROVED')}>
+                                            <CheckCircle className="mr-2 h-4 w-4" /> Approve Report
+                                        </Button>
+                                        <Button variant="destructive" className="flex-1" onClick={() => handleStatusUpdate(selectedReport.id, 'REJECTED')}>
+                                            <XCircle className="mr-2 h-4 w-4" /> Reject Report
+                                        </Button>
+                                    </div>
+                                )}
+
+                                {/* Raw Data Preview (Optional, for full context) */}
+                                <div className="border rounded-lg p-4 bg-gray-50 text-xs">
+                                    <h5 className="font-semibold mb-2 text-gray-700">Detailed Responses</h5>
+                                    <pre className="whitespace-pre-wrap font-mono text-gray-600 overflow-x-auto">
+                                        {JSON.stringify(selectedReport.data, null, 2)}
+                                    </pre>
                                 </div>
                             </div>
-
-                            {/* Action Buttons for Pending Reports */}
-                            {selectedReport.status === 'PENDING' && (
-                                <div className="flex gap-3 pt-4 border-t">
-                                    <Button className="flex-1 bg-green-600 hover:bg-green-700" onClick={() => handleStatusUpdate(selectedReport.id, 'APPROVED')}>
-                                        <CheckCircle className="mr-2 h-4 w-4" /> Approve Report
-                                    </Button>
-                                    <Button variant="destructive" className="flex-1" onClick={() => handleStatusUpdate(selectedReport.id, 'REJECTED')}>
-                                        <XCircle className="mr-2 h-4 w-4" /> Reject Report
-                                    </Button>
-                                </div>
-                            )}
-
-                            {/* Raw Data Preview (Optional, for full context) */}
-                            <div className="border rounded-lg p-4 bg-gray-50 text-xs">
-                                <h5 className="font-semibold mb-2 text-gray-700">Detailed Responses</h5>
-                                <pre className="whitespace-pre-wrap font-mono text-gray-600 overflow-x-auto">
-                                    {JSON.stringify(selectedReport.data, null, 2)}
-                                </pre>
-                            </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </SheetContent>
             </Sheet>
         </div >
