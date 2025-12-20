@@ -153,6 +153,14 @@ export default function AdminUsersPage() {
         });
     };
 
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredUsers = users.filter(user =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -161,17 +169,22 @@ export default function AdminUsersPage() {
                     <p className="text-gray-500">View and manage system access and permissions.</p>
                 </div>
                 <Button onClick={openCreateSheet} className="gap-2 bg-green-600 hover:bg-green-700">
-                    <UserPlus size={18} /> Add New User
+                    <UserPlus size={18} /> <span className="hidden md:inline">Add New User</span><span className="md:hidden">Add</span>
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <CardTitle>Registered Users</CardTitle>
-                        <div className="relative w-64 hidden md:block">
+                        <div className="relative w-full md:w-64">
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-                            <Input placeholder="Search users..." className="pl-8" />
+                            <Input
+                                placeholder="Search users..."
+                                className="pl-8"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
                         </div>
                     </div>
                 </CardHeader>
@@ -189,7 +202,9 @@ export default function AdminUsersPage() {
                             <TableBody>
                                 {loading ? (
                                     <TableRow><TableCell colSpan={4} className="text-center py-8">Loading users...</TableCell></TableRow>
-                                ) : users.map((user) => (
+                                ) : filteredUsers.length === 0 ? (
+                                    <TableRow><TableCell colSpan={4} className="text-center py-8 text-gray-500">No users found matching "{searchTerm}"</TableCell></TableRow>
+                                ) : filteredUsers.map((user) => (
                                     <TableRow key={user.id}>
                                         <TableCell className="font-medium">{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>

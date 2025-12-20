@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 import { BlurText } from '@/components/reactbits/BlurText';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -25,6 +25,7 @@ type LoginValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
 
@@ -158,12 +159,27 @@ export default function LoginPage() {
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="password" className={errors.password ? 'text-red-500' : 'text-gray-700'}>Password</Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        {...register('password')}
-                                        className={`h-11 ${errors.password ? 'border-red-500 focus-visible:ring-red-500' : 'border-gray-200 focus-visible:ring-green-100'}`}
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            {...register('password')}
+                                            className={`h-11 pr-10 ${errors.password ? 'border-red-500 focus-visible:ring-red-500' : 'border-gray-200 focus-visible:ring-green-100'}`}
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="h-4 w-4 text-gray-500" />
+                                            ) : (
+                                                <Eye className="h-4 w-4 text-gray-500" />
+                                            )}
+                                        </Button>
+                                    </div>
                                     {errors.password && (
                                         <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
                                             <AlertCircle size={12} /> {errors.password.message}

@@ -137,6 +137,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                 <NavContent />
                             </div>
                             <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
+                                <div className="flex items-center gap-3 mb-4 px-2">
+                                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold">
+                                        {user.name.charAt(0)}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+                                        <p className="text-xs text-gray-500 truncate capitalize">{user.role.replace('_', ' ')}</p>
+                                    </div>
+                                </div>
                                 <Button variant="outline" className="w-full justify-start text-red-600" onClick={handleLogout}>
                                     <LogOut size={16} className="mr-2" /> Logout
                                 </Button>
