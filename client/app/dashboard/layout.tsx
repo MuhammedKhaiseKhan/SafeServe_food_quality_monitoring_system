@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -17,6 +18,7 @@ import {
     LogOut,
     Building
 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -96,7 +98,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 fixed h-full z-20">
                 <div className="h-16 flex items-center px-6 border-b border-gray-100">
-                    <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold mr-3">S</div>
+                    <Image src="/logo.png" alt="SafeServe Logo" width={32} height={32} className="w-8 h-8 object-contain mr-3" />
                     <span className="text-xl font-bold text-gray-900 tracking-tight">SafeServe</span>
                 </div>
                 <div className="flex-1 overflow-y-auto py-6 px-4">
@@ -122,7 +124,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex-1 flex flex-col md:ml-64 transition-all duration-300">
                 <header className="md:hidden bg-white border-b h-16 flex items-center justify-between px-4 sticky top-0 z-10 transition-shadow shadow-sm">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
+                        <Image src="/logo.png" alt="SafeServe Logo" width={32} height={32} className="w-8 h-8 object-contain" />
                         <span className="text-lg font-bold text-gray-900">SafeServe</span>
                     </div>
                     <Sheet>

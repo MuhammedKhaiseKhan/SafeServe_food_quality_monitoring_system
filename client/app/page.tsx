@@ -20,8 +20,9 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-teal-100">
       {/* Navigation */}
       <nav className="fixed w-full items-center justify-between flex p-6 px-8 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
+          <Image src="/logo.png" alt="SafeServe Logo" width={32} height={32} className="w-8 h-8 object-contain" />
           <span className="text-xl font-bold tracking-tight text-gray-900">SafeServe</span>
         </div>
         <div className="flex items-center gap-4">
@@ -241,7 +242,7 @@ export default function LandingPage() {
       <footer className="bg-white border-t border-gray-100 py-12">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-teal-600 rounded flex items-center justify-center text-white text-xs font-bold">S</div>
+            <Image src="/logo.png" alt="SafeServe Logo" width={24} height={24} className="w-6 h-6 object-contain" />
             <span className="font-bold text-gray-900">SafeServe</span>
           </div>
           <div className="text-sm text-gray-500">
